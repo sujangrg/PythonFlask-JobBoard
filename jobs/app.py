@@ -1,3 +1,4 @@
+from distutils.util import execute
 import sqlite3
 from flask import Flask, render_template, g
 
@@ -34,3 +35,11 @@ def close_connection(exception):
 def jobs():
     jobs = execute_sql('SELECT job.id, job.title, job.description, job.salary, employer.id as employer_id, employer.name as employer_name FROM job JOIN employer ON employer.id = job.employer_id')
     return render_template('index.html', jobs=jobs)
+
+
+
+@app.route('/job')
+def job(job_id):
+    job = execute_sql('SELECT job.id, job.title, job.description, job.salary, employer.id as employer_id, employer.name as employer_name FROM job JOIN employer ON employer.id = job.employer_id WHERE job.id = ?', single=True)
+    return render_template('index.html', job=job)
+
